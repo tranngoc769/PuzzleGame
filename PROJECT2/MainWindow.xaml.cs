@@ -20,6 +20,7 @@ namespace PROJECT2
     /// </summary>
     public partial class MainWindow : Window
     {
+        string _maLog = "";
         bool _isDragging = false;
         Image _selectedBitmap = null;
         Point _lastPosition;
@@ -72,21 +73,22 @@ namespace PROJECT2
             var position = e.GetPosition(this);
             int x = 0, y = 0;
             getPos(position, ref x, ref y);
-            if (x < 3 && y < 3)
+            if (x < 3 && y < 3 && x*3+y+1 != matrix[2,2])
             {
-                //set new coordinate for selectedImage
                 Canvas.SetLeft(_selectedBitmap, UIView.marginX + y * UIView.pieceWidth + (UIView.pieceWidth - UIView.widthOfImage) / 2);
                 Canvas.SetTop(_selectedBitmap, UIView.marginY + x * UIView.pieceHeight + (UIView.pieceHeight - UIView.heightOfImage) / 2);
+                _log.Content = $"{x} {y} {matrix[2,2]}";
             }
             else
             {
+                // Tra ve vi tri cu
                 getPos(_lastPiece, ref x, ref y);
                 Canvas.SetLeft(_selectedBitmap, UIView.marginX + y * UIView.pieceWidth + (UIView.pieceWidth - UIView.widthOfImage) / 2);
                 Canvas.SetTop(_selectedBitmap, UIView.marginY + x * UIView.pieceHeight + (UIView.pieceHeight - UIView.heightOfImage) / 2);
 
             }
         }
-            private void CropImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void CropImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isDragging = true;
             _selectedBitmap = sender as Image;
@@ -108,7 +110,9 @@ namespace PROJECT2
                     }
                     while (randList.Contains(matrix[i, j]));
                     randList.Add(matrix[i, j]);
+                    _maLog += $"{matrix[i, j].ToString()} ";
                 }
+                _maLog += "\n";
             }
             playArea();
             loadImage(imagePath);
@@ -168,8 +172,6 @@ namespace PROJECT2
         }
         private void loadImage(string tmpPreviewName)
         {
-
-            //load preview image
                 BitmapImage source;
                 if (mode == 2)
                 {
@@ -179,7 +181,7 @@ namespace PROJECT2
                 {
                     source = new BitmapImage(new Uri(tmpPreviewName, UriKind.Relative));
                 }
-            //detect min dimesion
+                
             int leng = (int)source.Width;
             if (source.Height < source.Width)
             {
@@ -189,14 +191,13 @@ namespace PROJECT2
             var previewImg = new Image();
             previewImg.Width = UIView.widthOfPreviewImage;
             previewImg.Height = UIView.heightOfPreviewImage;
-            previewImg.Source = source; //full picture
-            //previewImg.Source = new CroppedBitmap(source,new Int32Rect(0,0,leng,leng)); //crop picture
+            previewImg.Source = source;
             Puzzle.Children.Add(previewImg);
             previewImg.Tag = Tuple.Create(-1, -1);
-
             Canvas.SetLeft(previewImg, UIView.marginX*2 + UIView.pieceWidth*UIView.colNumber);
             Canvas.SetTop(previewImg, UIView.marginY);
 
+            _matrixLog.Content = _maLog;
             for (int i = 0; i < UIView.rowNumber; i++)
             {
                 for (int j = 0; j < UIView.colNumber; j++)
