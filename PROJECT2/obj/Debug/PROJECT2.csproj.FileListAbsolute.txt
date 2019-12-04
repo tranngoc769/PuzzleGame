@@ -1,0 +1,16 @@
+F:\PROJECT2\PROJECT2\bin\Debug\PROJECT2.exe.config
+F:\PROJECT2\PROJECT2\bin\Debug\PROJECT2.exe
+F:\PROJECT2\PROJECT2\bin\Debug\PROJECT2.pdb
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2.csprojAssemblyReference.cache
+F:\PROJECT2\PROJECT2\obj\Debug\MainMenu.g.cs
+F:\PROJECT2\PROJECT2\obj\Debug\MainWindow.g.cs
+F:\PROJECT2\PROJECT2\obj\Debug\App.g.cs
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2_MarkupCompile.cache
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2_MarkupCompile.lref
+F:\PROJECT2\PROJECT2\obj\Debug\MainMenu.baml
+F:\PROJECT2\PROJECT2\obj\Debug\MainWindow.baml
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2.g.resources
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2.Properties.Resources.resources
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2.csproj.GenerateResource.cache
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2.exe
+F:\PROJECT2\PROJECT2\obj\Debug\PROJECT2.pdb
