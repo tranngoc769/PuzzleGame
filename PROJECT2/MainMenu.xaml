@@ -11,6 +11,8 @@
         </Button>
         <Button Name="load" Content="Load Game" Height="40" Width="145" Canvas.Left="175" Canvas.Top="195">
         </Button>
+        <Button Click="quit_Click" Name="quit" Content="Quit" Height="40" Width="145" Canvas.Left="175" Canvas.Top="255">
+        </Button>
 
 
         <Label Content="Mode"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="25" Width="145" Canvas.Left="175" Canvas.Top="17">

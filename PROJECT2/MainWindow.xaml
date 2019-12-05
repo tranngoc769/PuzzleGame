@@ -7,7 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" MouseMove="Window_MouseMove">
     <Canvas Name="Puzzle">
+        <Button FontSize="30" Name="savebtn" Click="savebtn_Click" Content="Save" Height="55" Width="165" Canvas.Left="590" Canvas.Top="25" Background="#00000000"></Button>
+        <Button FontSize="30" Name="loadbtn" Click="loadbtn_Click" Content="Load" Height="55" Width="165" Canvas.Left="590" Canvas.Top="100" Background="#00000000"></Button>
+        <Label x:Name="pzTimer" Content="Time : " FontSize="20" Height="45" Width="165" Canvas.Left="590" Canvas.Top="355"></Label>
         <Label Name="_log" Content="" Width="325" Canvas.Left="10" Canvas.Top="383"></Label>
-        <Label Name="_matrixLog" Content="" Width="187" Canvas.Left="595" Canvas.Top="310" Height="99"></Label>
+        <Label FontSize="20"  Name="_matrixLog" Content="" Width="222" Canvas.Left="560" Canvas.Top="160" Height="190"></Label>
+        <Canvas Height="150" Width="150" Canvas.Left="250" Canvas.Top="250">
+            <Image Source="resourse/arrow.png" Height="150" Width="150" ></Image>
+            <Button KeyUp="Key_Pressed" Click="upArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0" x:Name="upArrow" Height="35" Width="48" Canvas.Left="50" Canvas.Top="5" Cursor="UpArrow">
+                <Image Source="resourse/UpArrow.png"></Image>
+            </Button>
+            <Button KeyUp="Key_Pressed" Click="downArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0"  x:Name="downArrow" Height="35" Width="48" Canvas.Left="50" Canvas.Top="109">
+                <Image Source="resourse/DownArrow.png"></Image>
+            </Button>
+            <Button KeyUp="Key_Pressed"  Click="leftArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0"  x:Name="leftArrow" Height="45" Width="35" Canvas.Left="4" Canvas.Top="52">
+                <Image Source="resourse/RightArrow.png"></Image>
+            </Button>
+            <Button KeyUp="Key_Pressed"  Click="rightArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0"  x:Name="rightArrow" Height="45" Width="35" Canvas.Left="108" Canvas.Top="52">
+                <Image Source="resourse/LeftArrow.png"></Image>
+            </Button>
+        </Canvas>
     </Canvas>
 </Window>

@@ -71,5 +71,11 @@ namespace PROJECT2
             mode = 1;
             imagePath = "resourse/default.png";
         }
+
+        private void quit_Click(object sender, RoutedEventArgs e)
+        {
+
+            System.Windows.Application.Current.Shutdown();
+        }
     }
 }

@@ -104,5 +104,17 @@
   <ItemGroup>
     <Resource Include="resourse\default.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resourse\arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resourse\DownArrow.png" />
+    <Resource Include="resourse\LeftArrow.png" />
+    <Resource Include="resourse\RightArrow.png" />
+    <Resource Include="resourse\UpArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
