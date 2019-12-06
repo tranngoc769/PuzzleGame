@@ -1,30 +1,159 @@
-﻿<Window x:Class="PROJECT2.MainMenu"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PROJECT2"
-        mc:Ignorable="d"
-        Title="MainMenu" Height="450" Width="514" WindowStartupLocation="CenterScreen">
+﻿<Window
+    x:Class="PROJECT2.MainMenu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PROJECT2"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Puzzle Menu"
+    Width="540"
+    Height="517"
+    Icon="resourse/laucher.png"
+    Background="#ffccbc"
+    FontFamily="Century Schoolbook"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
     <Canvas>
-        <Button Name="start" Content="Start New Game" Height="40" Width="145" Canvas.Left="175" Canvas.Top="140" Click="start_Click">
-        </Button>
-        <Button Name="load" Content="Load Game" Height="40" Width="145" Canvas.Left="175" Canvas.Top="195">
-        </Button>
-        <Button Click="quit_Click" Name="quit" Content="Quit" Height="40" Width="145" Canvas.Left="175" Canvas.Top="255">
-        </Button>
+        <Button
+            Name="start"
+            Canvas.Left="175"
+            Canvas.Top="175"
+            Width="180"
+            Height="40"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="start_Click"
+            Content="Start New Game"
+            FontSize="20"
+            Foreground="AntiqueWhite" />
+        <Button
+            Name="load"
+            Canvas.Left="175"
+            Canvas.Top="230"
+            Width="180"
+            Height="40"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Content="Load Game"
+            FontSize="20"
+            Foreground="AntiqueWhite"
+            Click="load_Click"/>
+        <Button
+            Name="quit"
+            Canvas.Left="175"
+            Canvas.Top="345"
+            Height="40"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="quit_Click"
+            Content="Quit"
+            FontSize="20"
+            Width="180"
+            Foreground="AntiqueWhite" />
+        <Button
+            Name="about"
+            Canvas.Left="275"
+            Canvas.Top="285"
+            Height="40"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="about_Click"
+            Content="About"
+            FontSize="20"
+            Width="112"
+            Foreground="AntiqueWhite" />
+        <Button
+            Name="help"
+            Canvas.Left="145"
+            Canvas.Top="285"
+            Height="40"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="help_Click"
+            Content="Help"
+            FontSize="20"
+            Width="112"
+            Foreground="AntiqueWhite" />
 
 
-        <Label Content="Mode"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="25" Width="145" Canvas.Left="175" Canvas.Top="17">
-        </Label>
-        <Label Content="Image"  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="28" Width="145" Canvas.Left="175" Canvas.Top="67">
-        </Label>
+        <Label
+            Canvas.Left="175"
+            Canvas.Top="10"
+            Width="180"
+            Padding="20,5,20,5"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#c4001d"
+            Content="CHOOSE MODE"
+            FontFamily="Stencil Std"
+            FontSize="15"
+            Foreground="#ffffff" />
+        <Label
+            Canvas.Left="175"
+            Canvas.Top="94"
+            Padding="20,5,20,5"
+            Width="180"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#c4001d"
+            Content="Choose Image"
+            FontFamily="Stencil Std"
+            FontSize="15"
+            Foreground="#ffffff" />
 
-        <RadioButton GroupName="chooseImage" Name="customImageChoose" Canvas.Left="175" Canvas.Top="115" Content="Your Image" Click="customImageChoose_Click"></RadioButton>
-        <RadioButton GroupName="chooseImage" Name="defaultimageChoose" Canvas.Left="175" Canvas.Top="95" Content="Default" Click="defaultimageChoose_Click" IsChecked="True"></RadioButton>
+        <RadioButton
+            Name="customImageChoose"
+            Canvas.Left="182"
+            Canvas.Top="146"
+            Click="customImageChoose_Click"
+            Content="Your Image"
+            FontWeight="Bold"
+            Foreground="#0039cb"
+            GroupName="chooseImage" />
+        <RadioButton
+            Name="defaultimageChoose"
+            Canvas.Left="182"
+            Canvas.Top="127"
+            Click="defaultimageChoose_Click"
+            Content="Default Image"
+            FontWeight="Bold"
+            Foreground="#0039cb"
+            GroupName="chooseImage"
+            IsChecked="True" />
 
-        <RadioButton Name="type3" GroupName="chooseMode" Canvas.Left="135" Canvas.Top="47" Content="3x3" IsChecked="True"></RadioButton>
-        <RadioButton Name="type6" GroupName="chooseMode" Canvas.Left="235" Canvas.Top="47" Content="6x6" IsChecked="False"></RadioButton>
-        <RadioButton Name="type9" GroupName="chooseMode" Canvas.Left="335" Canvas.Top="47" Content="9x9" IsChecked="False"></RadioButton>
+        <RadioButton
+            FontSize="20"
+            Name="type3"
+            Canvas.Left="135"
+            Canvas.Top="47"
+            Content="3x3"
+            GroupName="chooseMode"
+            IsChecked="True" />
+        <RadioButton
+            FontSize="20"
+            Name="type6"
+            Canvas.Left="235"
+            Canvas.Top="47"
+            Content="6x6"
+            GroupName="chooseMode"
+            IsChecked="False" />
+        <RadioButton
+            FontSize="20"
+            Name="type9"
+            Canvas.Left="335"
+            Canvas.Top="47"
+            Content="9x9"
+            GroupName="chooseMode"
+            IsChecked="False" />
+        <Image
+            Canvas.Left="115"
+            Canvas.Top="405"
+            Width="300"
+            Source="resourse/puzzleGame.png" />
     </Canvas>
 </Window>

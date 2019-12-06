@@ -23,8 +23,14 @@ namespace PROJECT2
     /// </summary>
     public partial class MainWindow : Window
     {
+        int[,] matrix;
+        Timer timer;
+        private int mode, type,state;
+        private string imagePath;
+        private int count;
         public class Player
         {
+            public static int time { get; set; }
             public static bool isStop
             {
                 get;
@@ -81,16 +87,8 @@ namespace PROJECT2
                 get;
                 set;
             }
-            public static int marginX
-            {
-                get;
-                set;
-            }
-            public static int marginY
-            {
-                get;
-                set;
-            }
+            public const int marginX = 30;
+            public const int marginY = 50;
             public static int stockImageStartX
             {
                 get;
@@ -101,34 +99,75 @@ namespace PROJECT2
                 get;
                 set;
             }
-            public const int pieceWidth = 70;
-            public const int pieceHeight = 70;
-            public const int widthOfImage = 65;
-            public const int heightOfImage = 65;
-            public const int StockImageWitdh = 210;
-            public const int StockImageHeight = 210;
+            public static int pieceWidth { get; set; }
+            public static int pieceHeight { get; set; }
+            public const int StockImageWitdh = 360;
+            public const int StockImageHeight = 360;
             public const string fileSave = "saveGame.txt";
         }
-        int[,] matrix;
-        string _maLog = "";
-        Timer timer;
-        int count = 180;
-        private int mode, type;
-        private string imagePath;
-        public MainWindow(int mode, int type, string imagePath)
+        public MainWindow(int mode, int type, string imagePath, int state)
         {
             InitializeComponent();
             this.mode = mode;
             this.type = type;
             this.imagePath = imagePath;
+            this.state = state;
+
+        }
+        //Loaded
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            wiw.Visibility = Visibility.Hidden;
+            lost.Visibility = Visibility.Hidden;
             PlayArea.Rows = type * 3;
             PlayArea.Columns = type * 3;
-            PlayArea.marginX = 30;
-            PlayArea.marginY = 30;
             Player._isDragging = false;
+            Player.isStop = false;
+            Player.time = type * 180;
+            count = Player.time;
             Player.emptyX = PlayArea.Rows - 1;
             Player.emptyY = PlayArea.Columns - 1;
-
+            Player._matrixImage = new Image[PlayArea.Rows * PlayArea.Columns];
+            PlayArea.pieceHeight = PlayArea.StockImageHeight / PlayArea.Columns;
+            PlayArea.pieceWidth = PlayArea.pieceHeight;
+            Noti.Content = "Save successfully";
+            Noti.Content = "Use mouse or button/arrow key to play";
+            TimerStart();
+            if (state == 1)
+            {
+                RandomMatrix();
+                loadImage(imagePath);
+            }
+            else
+            {
+                loadGame();
+                TimerReStart();
+            }
+        }
+        //Others
+        private void RandomMatrix()
+        {
+            List<int> randList = new List<int>();
+            Random rand = new Random();
+            matrix = new int[PlayArea.Rows, PlayArea.Columns];
+            for (int i = 0; i < PlayArea.Rows; i++)
+            {
+                for (int j = 0; j < PlayArea.Columns; j++)
+                {
+                    do
+                    {
+                        matrix[i, j] = rand.Next(0, PlayArea.Rows * PlayArea.Columns);
+                    }
+                    while (randList.Contains(matrix[i, j]));
+                    randList.Add(matrix[i, j]);
+                }
+            }
+        }
+        private void Swap(ref int a, ref int b)
+        {
+            int temp = a;
+            a = b;
+            b = temp;
         }
         private bool checkWin()
         {
@@ -147,12 +186,18 @@ namespace PROJECT2
             Player.isStop = true;
             return Player.isStop;
         }
-        private void getPos(Point position, ref int i, ref int j)
+        private void positionToIndex(Point position, ref int i, ref int j)
         {
             i = ((int)position.Y - PlayArea.marginY) / PlayArea.pieceHeight;
             j = ((int)position.X - PlayArea.marginX) / PlayArea.pieceWidth;
         }
         //Timer
+        private void TimerReStart()
+        {
+            timer.Stop();
+            count =Player.time;
+            timer.Start();
+        }
         private void TimerStart()
         {
             timer = new Timer();
@@ -167,57 +212,48 @@ namespace PROJECT2
             if (count == 0)
             {
                 Player.isStop = true;
+                lost.Visibility = Visibility.Visible;
                 timer.Stop();
             }
-            Dispatcher.Invoke(() => pzTimer.Content = $"Time : {count}");
+            int min = count / 60;
+            string sec = (count % 60).ToString();
+            if (count % 60 < 10) sec = "0" + sec;
+            Dispatcher.Invoke(() => pzTimer.Content = $"Time : 0{min}:{sec}");
         }
         //Drop image
         private void DragImageFinished(object sender, MouseButtonEventArgs e)
         {
-            Player._isDragging = false;
-            var position = e.GetPosition(this);
-            int x = 0, y = 0;
-            int oldX = 0, oldY = 0;
-            getPos(Player._lastPiece, ref oldX, ref oldY);
-            getPos(position, ref x, ref y);
-            //x,y la vi tri can tha
-            //oldX, oldY la vi tri ban dau
-            if (x < PlayArea.Rows && y < PlayArea.Columns && (x == oldX && (y == oldY + 1 || y == oldY - 1) || (y == oldY && (x == oldX + 1 || x == oldX - 1))) && matrix[x, y] == (PlayArea.Columns * PlayArea.Rows - 1))
+            if (!Player.isStop)
             {
-                Canvas.SetLeft(Player._selectedBitmap, PlayArea.marginX + y * PlayArea.pieceWidth + (PlayArea.pieceWidth - PlayArea.widthOfImage) / 2);
-                Canvas.SetTop(Player._selectedBitmap, PlayArea.marginY + x * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
-                int temp = matrix[x, y];
-                matrix[x, y] = matrix[oldX, oldY];
-                matrix[oldX, oldY] = temp;
-                Player.emptyX = oldX;
-                Player.emptyY = oldY;
-            }
-            else
-            {
-                // Tra ve vi tri cu
-                Canvas.SetLeft(Player._selectedBitmap, PlayArea.marginX + oldY * PlayArea.pieceWidth + (PlayArea.pieceWidth - PlayArea.widthOfImage) / 2);
-                Canvas.SetTop(Player._selectedBitmap, PlayArea.marginY + oldX * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
-
-            }
-            Test();
-            if (checkWin() == true)
-            {
-                MessageBox.Show("WIN");
-            }
-        }
-        private void Test()
-        {
-            _maLog = "";
-            for (int i = 0; i < PlayArea.Rows; i++)
-            {
-                for (int j = 0; j < PlayArea.Columns; j++)
+                Player._isDragging = false;
+                var position = e.GetPosition(this);
+                int x = 0, y = 0;
+                int oldX = 0, oldY = 0;
+                positionToIndex(Player._lastPiece, ref oldX, ref oldY);
+                positionToIndex(position, ref x, ref y);
+                //x,y la vi tri can tha
+                //oldX, oldY la vi tri ban dau
+                if (x < PlayArea.Rows && y < PlayArea.Columns && (x == oldX && (y == oldY + 1 || y == oldY - 1) || (y == oldY && (x == oldX + 1 || x == oldX - 1))) && matrix[x, y] == (PlayArea.Columns * PlayArea.Rows - 1))
                 {
-
-                    _maLog += $"{matrix[i, j].ToString()} ";
+                    Canvas.SetLeft(Player._selectedBitmap, PlayArea.marginX + y * PlayArea.pieceWidth);
+                    Canvas.SetTop(Player._selectedBitmap, PlayArea.marginY + x * PlayArea.pieceHeight);
+                    Swap(ref matrix[x, y], ref matrix[oldX, oldY]);
+                    Player.emptyX = oldX;
+                    Player.emptyY = oldY;
+                    if (checkWin() == true)
+                    {
+                        wiw.Visibility = Visibility.Visible;
+                        timer.Stop();
+                    }
                 }
-                _maLog += "\n";
+                else
+                {
+                    // Tra ve vi tri cu
+                    Canvas.SetLeft(Player._selectedBitmap, PlayArea.marginX + oldY * PlayArea.pieceWidth);
+                    Canvas.SetTop(Player._selectedBitmap, PlayArea.marginY + oldX * PlayArea.pieceHeight);
+
+                }
             }
-            _matrixLog.Content = _maLog;
         }
         //Drag image
         private void StartDragImage(object sender, MouseButtonEventArgs e)
@@ -237,8 +273,7 @@ namespace PROJECT2
 
             int i = 0,
             j = 0;
-            getPos(position, ref i, ref j);
-            this.Title = $"{position.X} - {position.Y}, a[{i}][{j}]";
+            positionToIndex(position, ref i, ref j);
             if (Player._isDragging)
             {
                 var dx = position.X - Player._lastPosition.X;
@@ -250,50 +285,21 @@ namespace PROJECT2
                 Player._lastPosition = position;
             }
         }
-        private void Img_MouseEnter(object sender, MouseButtonEventArgs e)
+
+        //Play area
+        private void clearPlayArea()
         {
-            //_isDragging = true;
-            Player._selectedBitmap = sender as Image;
-            Point pos = e.GetPosition(this);
-            //_lastPiece = e.GetPosition(this);
-            var animation = new DoubleAnimation();
-            animation.From = pos.X;
-            animation.To = pos.X + 18;
-            animation.Duration = new Duration(TimeSpan.FromSeconds(0.5));
-            animation.AutoReverse = false;
-            var story = new Storyboard();
-            story.Children.Add(animation);
-            Storyboard.SetTargetName(animation, Player._selectedBitmap.Name);
-            Storyboard.SetTargetProperty(animation, new PropertyPath(Canvas.LeftProperty));
-            story.Begin(this);
-        }
-       
-        //Loaded
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            List<int> randList = new List<int>();
-            Random rand = new Random();
-            matrix = new int[PlayArea.Rows, PlayArea.Columns];
-            for (int i = 0; i < PlayArea.Rows; i++)
+            var images = Puzzle.Children.OfType<Image>().ToList();
+            foreach (var image in images)
             {
-                for (int j = 0; j < PlayArea.Columns; j++)
-                {
-                    do
-                    {
-                        matrix[i, j] = rand.Next(0, PlayArea.Rows * PlayArea.Columns);
-                    }
-                    while (randList.Contains(matrix[i, j]));
-                    randList.Add(matrix[i, j]);
-                    _maLog += $"{matrix[i, j].ToString()} ";
-                }
-                _maLog += "\n";
+                Puzzle.Children.Remove(image);
             }
-            Player._matrixImage = new Image[PlayArea.Rows * PlayArea.Columns];
-            playArea();
-            loadImage(imagePath);
-            TimerStart();
+            var lines = Puzzle.Children.OfType<Line>().ToList();
+            foreach (var line in lines)
+            {
+                Puzzle.Children.Remove(line);
+            }
         }
-        //Draw play area
         private void playArea()
         {
             /*UI*/
@@ -301,7 +307,7 @@ namespace PROJECT2
             for (int i = 0; i < PlayArea.Rows + 1; i++)
             {
                 var line = new Line();
-                line.StrokeThickness = 1;
+                line.StrokeThickness = 3;
                 line.Stroke = new SolidColorBrush(Colors.Aqua);
                 Puzzle.Children.Add(line);
                 line.X1 = PlayArea.marginX + i * PlayArea.pieceWidth;
@@ -314,7 +320,7 @@ namespace PROJECT2
             for (int i = 0; i < PlayArea.Columns + 1; i++)
             {
                 var line = new Line();
-                line.StrokeThickness = 1;
+                line.StrokeThickness = 3;
                 line.Stroke = new SolidColorBrush(Colors.Aqua);
                 Puzzle.Children.Add(line);
 
@@ -326,7 +332,6 @@ namespace PROJECT2
             }
         }
         // Arrow route
-        //Arrow model
         private void ArrowUpHandle()
         {
             if (!Player.isStop)
@@ -335,18 +340,17 @@ namespace PROJECT2
                 {
                     var img = new Image();
                     img = Player._matrixImage[matrix[Player.emptyX + 1, Player.emptyY]];
-                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth + (PlayArea.pieceWidth - PlayArea.widthOfImage) / 2);
-                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
-                    int temp = matrix[Player.emptyX, Player.emptyY];
-                    matrix[Player.emptyX, Player.emptyY] = matrix[Player.emptyX + 1, Player.emptyY];
-                    matrix[Player.emptyX + 1, Player.emptyY] = temp;
+                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth);
+                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight);
+                    Swap(ref matrix[Player.emptyX, Player.emptyY], ref matrix[Player.emptyX + 1, Player.emptyY]);
                     Player.emptyX++;
-                    Test();
                 }
 
                 if (checkWin() == true)
                 {
-                    MessageBox.Show("WIN");
+
+                    wiw.Visibility = Visibility.Visible;
+                    timer.Stop();
                 }
             }
         }
@@ -358,17 +362,16 @@ namespace PROJECT2
                 {
                     var img = new Image();
                     img = Player._matrixImage[matrix[Player.emptyX - 1, Player.emptyY]];
-                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth + (PlayArea.pieceWidth - PlayArea.widthOfImage) / 2);
-                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
-                    int temp = matrix[Player.emptyX, Player.emptyY];
-                    matrix[Player.emptyX, Player.emptyY] = matrix[Player.emptyX - 1, Player.emptyY];
-                    matrix[Player.emptyX - 1, Player.emptyY] = temp;
+                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth);
+                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight);
+                    Swap(ref matrix[Player.emptyX, Player.emptyY], ref matrix[Player.emptyX - 1, Player.emptyY]);
                     Player.emptyX--;
-                    Test();
                 }
                 if (checkWin() == true)
                 {
-                    MessageBox.Show("WIN");
+
+                    wiw.Visibility = Visibility.Visible;
+                    timer.Stop();
                 }
             }
         }
@@ -381,17 +384,16 @@ namespace PROJECT2
                 {
                     var img = new Image();
                     img = Player._matrixImage[matrix[Player.emptyX, Player.emptyY + 1]];
-                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth + (PlayArea.pieceWidth - PlayArea.widthOfImage) / 2);
-                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
-                    int temp = matrix[Player.emptyX, Player.emptyY];
-                    matrix[Player.emptyX, Player.emptyY] = matrix[Player.emptyX, Player.emptyY + 1];
-                    matrix[Player.emptyX, Player.emptyY + 1] = temp;
+                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth);
+                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight);
+                    Swap(ref matrix[Player.emptyX, Player.emptyY], ref matrix[Player.emptyX, Player.emptyY + 1]);
                     Player.emptyY++;
-                    Test();
                 }
                 if (checkWin() == true)
                 {
-                    MessageBox.Show("WIN");
+
+                    wiw.Visibility = Visibility.Visible;
+                    timer.Stop();
                 }
             }
         }
@@ -404,17 +406,15 @@ namespace PROJECT2
                 {
                     var img = new Image();
                     img = Player._matrixImage[matrix[Player.emptyX, Player.emptyY - 1]];
-                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth + (PlayArea.pieceWidth - PlayArea.widthOfImage) / 2);
-                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
-                    int temp = matrix[Player.emptyX, Player.emptyY];
-                    matrix[Player.emptyX, Player.emptyY] = matrix[Player.emptyX, Player.emptyY - 1];
-                    matrix[Player.emptyX, Player.emptyY - 1] = temp;
+                    Canvas.SetLeft(img, PlayArea.marginX + Player.emptyY * PlayArea.pieceWidth);
+                    Canvas.SetTop(img, PlayArea.marginY + Player.emptyX * PlayArea.pieceHeight);
+                    Swap(ref matrix[Player.emptyX, Player.emptyY], ref matrix[Player.emptyX, Player.emptyY - 1]);
                     Player.emptyY--;
-                    Test();
                 }
                 if (checkWin() == true)
                 {
-                    MessageBox.Show("WIN");
+                    wiw.Visibility = Visibility.Visible;
+                    timer.Stop();
                 }
             }
         }
@@ -435,6 +435,7 @@ namespace PROJECT2
         {
             ArrowRightHandle();
         }
+        //Button control
         private void Key_Pressed(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Down)
@@ -454,24 +455,23 @@ namespace PROJECT2
                 ArrowRightHandle();
             }
         }
-        
         private void savebtn_Click(object sender, RoutedEventArgs e)
         {
             //Save image
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create((BitmapSource)PlayArea.StockImage.Source));
             using (FileStream stream = new FileStream("save.png", FileMode.Create))
-            encoder.Save(stream);
-            MessageBox.Show("Save success");
+                encoder.Save(stream);
             //Save Data
             var writer = new StreamWriter("save");
             writer.WriteLine(type);
+            writer.WriteLine(count);
             for (int i = 0; i < PlayArea.Rows; i++)
             {
                 for (int j = 0; j < PlayArea.Columns; j++)
                 {
                     writer.Write($"{matrix[i, j]}");
-                    if (j != PlayArea.Columns-1)
+                    if (j != PlayArea.Columns - 1)
                     {
                         writer.Write(" ");
 
@@ -481,33 +481,85 @@ namespace PROJECT2
                 writer.WriteLine("");
             }
             writer.Close();
+            
+            Noti.Content = "Save successfully";
+            Task.Delay(2000).ContinueWith(_ =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    Noti.Content = "Use mouse or button/arrow key to play";
+                });
+            }
+);
         }
-
+        private bool loadGame()
+        {
+            //Chua try catch
+            try
+            {
+                mode = 1;
+                var reader = new StreamReader("save");
+                PlayArea.Rows = 3 * int.Parse(reader.ReadLine());
+                PlayArea.Columns = PlayArea.Rows;
+                Player.time = int.Parse(reader.ReadLine());
+                matrix = new int[PlayArea.Rows, PlayArea.Columns];
+                for (int i = 0; i < PlayArea.Rows; i++)
+                {
+                    var line = reader.ReadLine().Split(new string[] { " " }, StringSplitOptions.None);
+                    for (int j = 0; j < PlayArea.Columns; j++)
+                    {
+                        matrix[i, j] = int.Parse(line[j]);
+                    }
+                }
+                reader.Close();
+                //De clear o duoi tranh bi anh huong boi try catch
+                clearPlayArea();
+                Player._matrixImage = new Image[PlayArea.Rows * PlayArea.Columns];
+                PlayArea.pieceHeight = PlayArea.StockImageHeight / PlayArea.Columns;
+                PlayArea.pieceWidth = PlayArea.pieceHeight;
+                loadImage("save.png");
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
         private void loadbtn_Click(object sender, RoutedEventArgs e)
         {
-            mode = 1;
-            var images = Puzzle.Children.OfType<Image>().ToList();
-            foreach (var image in images)
+            if (loadGame() == true)
             {
-                Puzzle.Children.Remove(image);
-            }
-            //Chua try catch
-            var reader = new StreamReader("save");
-            PlayArea.Rows = 3*int.Parse(reader.ReadLine());
-            PlayArea.Columns = PlayArea.Rows;
-            for (int i = 0; i < PlayArea.Rows; i++)
-            {
-                var line = reader.ReadLine().Split(new string[] { " " }, StringSplitOptions.None);
-                for (int j = 0; j < PlayArea.Columns; j++)
-                {
-                    matrix[i, j] = int.Parse(line[j]);
-                }
-            }
-            reader.Close();
-            Test();
-            loadImage("save.png");
-        }
 
+                wiw.Visibility = Visibility.Hidden;
+                lost.Visibility = Visibility.Hidden;
+                TimerReStart();
+                Noti.Content = "Load successfully";
+                Task.Delay(2000).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        Noti.Content = "Use mouse or button/arrow key to play";
+                    });
+                });
+            }
+            else
+            {
+                Noti.Content = "No game saved";
+                Task.Delay(2000).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        Noti.Content = "Use mouse or button/arrow key to play";
+                    });
+                });
+            }
+        }
+        private void mainMenu_Click(object sender, RoutedEventArgs e)
+        {
+            var mainmenu = new MainMenu();
+            Close();
+            mainmenu.ShowDialog();
+        }
         private void loadImage(string stockImagePath)
         {
             BitmapImage source;
@@ -519,10 +571,10 @@ namespace PROJECT2
             {
                 source = new BitmapImage(new Uri(stockImagePath, UriKind.Relative));
             }
-            int leng = (int)source.Width;
-            if (source.Height < source.Width)
+            int leng = (int)source.PixelWidth;
+            if (source.PixelHeight < source.PixelWidth)
             {
-                leng = (int)source.Height;
+                leng = (int)source.PixelHeight;
             }
             PlayArea.StockImage = new Image();
             PlayArea.StockImage.Width = PlayArea.StockImageWitdh;
@@ -533,7 +585,6 @@ namespace PROJECT2
             PlayArea.StockImage.Tag = Tuple.Create(-1, -1);
             Canvas.SetLeft(PlayArea.StockImage, PlayArea.marginX * 2 + PlayArea.pieceWidth * PlayArea.Columns);
             Canvas.SetTop(PlayArea.StockImage, PlayArea.marginY);
-            _matrixLog.Content = _maLog;
             int pos = 0;
             for (int i = 0; i < PlayArea.Rows; i++)
             {
@@ -549,8 +600,8 @@ namespace PROJECT2
                         var cropBitmap = new CroppedBitmap(source, rect);
                         var img = new Image();
                         img.Stretch = Stretch.Fill;
-                        img.Width = PlayArea.widthOfImage;
-                        img.Height = PlayArea.heightOfImage;
+                        img.Width = PlayArea.pieceWidth;
+                        img.Height = PlayArea.pieceHeight;
                         img.Source = cropBitmap;
                         img.Tag = new Tuple<int,
                         int>(i, j);
@@ -558,34 +609,40 @@ namespace PROJECT2
                     }
                 }
             }
-            string a = "";
             for (int i = 0; i < PlayArea.Rows; i++)
             {
                 for (int j = 0; j < PlayArea.Columns; j++)
                 {
                     if (matrix[i, j] != PlayArea.Rows * PlayArea.Columns - 1)
                     {
-                        a += $"{matrix[i, j]} ";
                         var img = new Image();
                         img = Player._matrixImage[matrix[i, j]];
                         Puzzle.Children.Add(img);
                         string name = "Name_" + matrix[i, j].ToString();
-                        Canvas.SetLeft(img, PlayArea.marginX + j * PlayArea.pieceWidth + (PlayArea.pieceHeight - PlayArea.widthOfImage) / 2);
-                        Canvas.SetTop(img, PlayArea.marginY + i * PlayArea.pieceHeight + (PlayArea.pieceHeight - PlayArea.heightOfImage) / 2);
+                        Canvas.SetLeft(img, PlayArea.marginX + j * PlayArea.pieceWidth);
+                        Canvas.SetTop(img, PlayArea.marginY + i * PlayArea.pieceHeight);
                         img.MouseLeftButtonDown += StartDragImage;
                         img.PreviewMouseLeftButtonUp += DragImageFinished;
-                        img.MouseRightButtonUp += Img_MouseEnter;
                     }
                     else
                     {
                         Player.emptyX = i;
                         Player.emptyY = j;
-
                     }
                 }
             }
-
+            playArea();
         }
-        
+        private void reStart_Click(object sender, RoutedEventArgs e)
+        {
+            wiw.Visibility = Visibility.Hidden;
+            lost.Visibility = Visibility.Hidden;
+            Player.time = type * 180;
+            Player.isStop = false;
+            clearPlayArea();
+            RandomMatrix();
+            loadImage(imagePath);
+            TimerReStart();
+        }
     }
 }

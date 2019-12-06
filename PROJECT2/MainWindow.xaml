@@ -1,31 +1,177 @@
-﻿<Window x:Class="PROJECT2.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PROJECT2"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded" MouseMove="Window_MouseMove">
-    <Canvas Name="Puzzle">
-        <Button FontSize="30" Name="savebtn" Click="savebtn_Click" Content="Save" Height="55" Width="165" Canvas.Left="590" Canvas.Top="25" Background="#00000000"></Button>
-        <Button FontSize="30" Name="loadbtn" Click="loadbtn_Click" Content="Load" Height="55" Width="165" Canvas.Left="590" Canvas.Top="100" Background="#00000000"></Button>
-        <Label x:Name="pzTimer" Content="Time : " FontSize="20" Height="45" Width="165" Canvas.Left="590" Canvas.Top="355"></Label>
-        <Label Name="_log" Content="" Width="325" Canvas.Left="10" Canvas.Top="383"></Label>
-        <Label FontSize="20"  Name="_matrixLog" Content="" Width="222" Canvas.Left="560" Canvas.Top="160" Height="190"></Label>
-        <Canvas Height="150" Width="150" Canvas.Left="250" Canvas.Top="250">
-            <Image Source="resourse/arrow.png" Height="150" Width="150" ></Image>
-            <Button KeyUp="Key_Pressed" Click="upArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0" x:Name="upArrow" Height="35" Width="48" Canvas.Left="50" Canvas.Top="5" Cursor="UpArrow">
-                <Image Source="resourse/UpArrow.png"></Image>
+﻿<Window
+    x:Class="PROJECT2.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:PROJECT2"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Puzzle"
+    Icon="resourse/laucher.png"
+    Width="1200"
+    Height="700"
+    Background="#ffebee"
+    FontFamily="Tekton Pro Ext"
+    Loaded="Window_Loaded"
+    MouseMove="Window_MouseMove"
+    mc:Ignorable="d">
+    <Canvas>
+        <Image Visibility="Hidden" x:Name="wiw" Source="resourse/win.png" Height="200" Width="265" Canvas.Left="845" Canvas.Top="412"></Image>
+        <Image Visibility="Hidden" x:Name="lost" Source="resourse/lost.png" Height="200" Width="265" Canvas.Left="845" Canvas.Top="412"></Image>
+        <Canvas Name="Puzzle" Height="435" Width="800"></Canvas>
+        <Button
+            Name="savebtn"
+            Canvas.Left="905"
+            Canvas.Top="197"
+            Canvas.Right="60"
+            Width="165"
+            Height="45"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="savebtn_Click"
+            Content="Save"
+            FontSize="20"
+            Foreground="AntiqueWhite" />
+        <Button
+            Name="loadbtn"
+            Canvas.Left="905"
+            Canvas.Top="252"
+            Canvas.Right="60"
+            Width="165"
+            Height="45"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="loadbtn_Click"
+            Content="Load"
+            FontSize="20"
+            Foreground="AntiqueWhite" />
+        <Button
+            Name="mainMenu"
+            Canvas.Left="905"
+            Canvas.Top="362"
+            Canvas.Right="60"
+            Width="165"
+            Height="45"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="mainMenu_Click"
+            Content="Main Menu"
+            FontSize="20"
+            Foreground="AntiqueWhite" />
+        <Button
+            Name="restart"
+            Canvas.Left="905"
+            Canvas.Top="307"
+            Canvas.Right="60"
+            Width="165"
+            Height="45"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#ff8f00"
+            Click="reStart_Click"
+            Content="Restart"
+            FontSize="20"
+            Foreground="AntiqueWhite" />
+        <Label
+            x:Name="pzTimer"
+            Canvas.Left="420"
+            Canvas.Top="475"
+            Height="80"
+            Padding="10"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#c4001d"
+            Content="Time : "
+            FontFamily="Stencil Std"
+            FontSize="50"
+            Foreground="#ffffff"
+            RenderTransformOrigin="0.046,-0.231" Width="360" />
+        <Label
+            x:Name="Noti"
+            Canvas.Left="420"
+            Canvas.Top="560"
+            Height="52"
+            Width="360"
+            Padding="10"
+            HorizontalContentAlignment="Center"
+            VerticalContentAlignment="Center"
+            Background="#c4001d"
+            Content=""
+            FontFamily="Stencil Std"
+            FontSize="20"
+            Foreground="#ffffff"
+            RenderTransformOrigin="0.046,-0.231"/>
+        <Canvas
+            Canvas.Left="140"
+            Canvas.Top="440"
+            Width="150"
+            Height="150">
+            <Image
+                Width="150"
+                Height="150"
+                Source="resourse/arrow.png" />
+            <Button
+                x:Name="upArrow"
+                Canvas.Left="50"
+                Canvas.Top="5"
+                Width="48"
+                Height="35"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="upArrow_Click"
+                Cursor="UpArrow"
+                KeyUp="Key_Pressed"
+                Opacity="0.2">
+                <Image Source="resourse/UpArrow.png" />
             </Button>
-            <Button KeyUp="Key_Pressed" Click="downArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0"  x:Name="downArrow" Height="35" Width="48" Canvas.Left="50" Canvas.Top="109">
-                <Image Source="resourse/DownArrow.png"></Image>
+            <Button
+                x:Name="downArrow"
+                Canvas.Left="50"
+                Canvas.Top="109"
+                Width="48"
+                Height="35"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="downArrow_Click"
+                Cursor="Arrow"
+                KeyUp="Key_Pressed"
+                Opacity="0.2">
+                <Image Source="resourse/DownArrow.png" />
             </Button>
-            <Button KeyUp="Key_Pressed"  Click="leftArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0"  x:Name="leftArrow" Height="45" Width="35" Canvas.Left="4" Canvas.Top="52">
-                <Image Source="resourse/RightArrow.png"></Image>
+            <Button
+                x:Name="leftArrow"
+                Canvas.Left="4"
+                Canvas.Top="52"
+                Width="35"
+                Height="45"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="leftArrow_Click"
+                Cursor="Arrow"
+                KeyUp="Key_Pressed"
+                Opacity="0.2">
+                <Image Source="resourse/RightArrow.png" />
             </Button>
-            <Button KeyUp="Key_Pressed"  Click="rightArrow_Click" Opacity="0.2" Background="Transparent" BorderThickness="0"  x:Name="rightArrow" Height="45" Width="35" Canvas.Left="108" Canvas.Top="52">
-                <Image Source="resourse/LeftArrow.png"></Image>
+            <Button
+                x:Name="rightArrow"
+                Canvas.Left="108"
+                Canvas.Top="52"
+                Width="35"
+                Height="45"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="rightArrow_Click"
+                Cursor="Arrow"
+                KeyUp="Key_Pressed"
+                Opacity="0.2">
+                <Image Source="resourse/LeftArrow.png" />
             </Button>
         </Canvas>
+        <Image
+            Canvas.Left="835"
+            Canvas.Top="45"
+            Source="resourse/icon.png" Height="150" Width="300" />
     </Canvas>
 </Window>

@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DialogResult.cs" />
     <Compile Include="MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
@@ -112,6 +113,19 @@
     <Resource Include="resourse\LeftArrow.png" />
     <Resource Include="resourse\RightArrow.png" />
     <Resource Include="resourse\UpArrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resourse\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resourse\puzzleGame.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resourse\lost.png" />
+    <Resource Include="resourse\win.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resourse\laucher.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />

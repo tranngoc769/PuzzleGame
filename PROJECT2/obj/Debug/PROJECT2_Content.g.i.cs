@@ -8,9 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resourse/downarrow.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resourse/leftarrow.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resourse/rightarrow.png")]
-[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resourse/uparrow.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("data/laucher.png")]
 
 
